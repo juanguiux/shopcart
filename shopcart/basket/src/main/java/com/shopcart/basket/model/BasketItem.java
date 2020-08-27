@@ -1,35 +1,36 @@
 package com.shopcart.basket.model;
 
-import javax.persistence.*;
+import org.springframework.cassandra.core.Ordering;
+import org.springframework.cassandra.core.PrimaryKeyType;
+import org.springframework.data.cassandra.mapping.Column;
+import org.springframework.data.cassandra.mapping.PrimaryKeyColumn;
+import org.springframework.data.cassandra.mapping.Table;
+
 import java.math.BigDecimal;
+import java.util.UUID;
 
-@Entity
-@Table(name = "BasketItem")
+@Table
 public class BasketItem {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    @Column(name = "product_id")
+    @PrimaryKeyColumn(name = "id", ordinal = 0, type = PrimaryKeyType.CLUSTERED, ordering = Ordering.DESCENDING)
+    private UUID id;
+    @Column
     private String productId;
-    @Column(name = "product_name")
+    @Column
     private String productName;
-    @Column(name = "unit_price")
+    @Column
     private BigDecimal unitPrice;
-    @Column(name = "old_unit_price")
+    @Column
     private BigDecimal oldUnitPrice;
-    @Column(name = "quantity")
+    @Column
     private int quantity;
-    @Column(name = "picture_url")
+    @Column
     private String pictureUrl;
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="customer_basket_id")
-    private CustomerBasket customerBasket;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -81,18 +82,10 @@ public class BasketItem {
         this.pictureUrl = pictureUrl;
     }
 
-    public CustomerBasket getCustomerBasket() {
-        return customerBasket;
-    }
-
-    public void setCustomerBasket(CustomerBasket customerBasket) {
-        this.customerBasket = customerBasket;
-    }
-
     @Override
     public String toString() {
         return "BasketItem{" +
-                "id='" + id + '\'' +
+                "id=" + id +
                 ", productId='" + productId + '\'' +
                 ", productName='" + productName + '\'' +
                 ", unitPrice=" + unitPrice +

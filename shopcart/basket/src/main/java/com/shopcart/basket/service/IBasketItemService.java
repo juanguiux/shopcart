@@ -2,18 +2,20 @@ package com.shopcart.basket.service;
 
 import com.shopcart.basket.common.BasketItemNotFoundException;
 import com.shopcart.basket.model.BasketItem;
+import com.shopcart.basket.model.CustomerBasket;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletionStage;
 
 public interface IBasketItemService {
-    List<BasketItem> findAll();
+    List<CustomerBasket> findAll();
 
-    BasketItem findById(Long basketItemId) throws BasketItemNotFoundException;
+    CustomerBasket findById(UUID basketItemId) throws BasketItemNotFoundException;
 
-    CompletionStage<BasketItem> save(BasketItem basketItem);
+    CompletionStage<CustomerBasket> save(CustomerBasket basketItem);
 
-    BasketItem update(Long id, BasketItem basketItem) throws BasketItemNotFoundException;
+    CustomerBasket update(UUID basketItemId, CustomerBasket basketItem) throws BasketItemNotFoundException;
 
-    boolean delete(Long basketItemId);
+    boolean delete(UUID basketItemId);
 }

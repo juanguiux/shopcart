@@ -2,11 +2,13 @@ package com.shopcart.basket.controller;
 
 import com.shopcart.basket.common.BasketItemNotFoundException;
 import com.shopcart.basket.model.BasketItem;
+import com.shopcart.basket.model.CustomerBasket;
 import com.shopcart.basket.service.IBasketItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletionStage;
 
 @RestController
@@ -21,17 +23,17 @@ public class BasketItemController {
     }
 
     @GetMapping("/{id}")
-    public BasketItem findById(@PathVariable("id") Long id) throws BasketItemNotFoundException {
+    public CustomerBasket findById(@PathVariable("id") UUID id) throws BasketItemNotFoundException {
         return basketItemService.findById(id);
     }
 
     @GetMapping
-    public List<BasketItem> findAll() {
+    public List<CustomerBasket> findAll() {
         return basketItemService.findAll();
     }
 
     @PostMapping
-    public CompletionStage<BasketItem> save(@RequestBody BasketItem basketItem) {
+    public CompletionStage<CustomerBasket> save(@RequestBody CustomerBasket basketItem) {
         return basketItemService.save(basketItem);
     }
 }

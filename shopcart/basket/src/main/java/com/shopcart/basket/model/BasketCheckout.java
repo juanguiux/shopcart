@@ -1,39 +1,39 @@
 package com.shopcart.basket.model;
+import org.springframework.cassandra.core.Ordering;
+import org.springframework.cassandra.core.PrimaryKeyType;
+import org.springframework.data.cassandra.mapping.Column;
+import org.springframework.data.cassandra.mapping.PrimaryKeyColumn;
+import org.springframework.data.cassandra.mapping.Table;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.util.Date;
 import java.util.UUID;
-@Entity
-@Table(name = "basket_checkout")
+
+@Table
 public class BasketCheckout {
 
-    @Id
-    @Column(name = "request_id")
+    @PrimaryKeyColumn(name = "id", ordinal = 0, type = PrimaryKeyType.CLUSTERED, ordering = Ordering.DESCENDING)
     private UUID requestId;
-    @Column(name = "city")
+    @Column
     private String city;
-    @Column(name = "street")
+    @Column
     private String street;
-    @Column(name = "state")
+    @Column
     private String state;
-    @Column(name = "country")
+    @Column
     private String country;
-    @Column(name = "zip_code")
+    @Column
     private String zipCode;
-    @Column(name = "card_number")
+    @Column
     private String cardNumber;
-    @Column(name = "card_holder_name")
+    @Column
     private String cardHolderName;
-    @Column(name = "card_expiration")
+    @Column
     private Date cardExpiration;
-    @Column(name = "card_security_number")
+    @Column
     private String cardSecurityNumber;
-    @Column(name = "card_type_id")
+    @Column
     private int cardTypeId;
-    @Column(name = "buyer")
+    @Column
     private String buyer;
 
     public UUID getRequestId() {

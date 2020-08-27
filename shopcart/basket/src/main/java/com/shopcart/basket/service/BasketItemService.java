@@ -1,14 +1,16 @@
 package com.shopcart.basket.service;
 
 import com.shopcart.basket.common.BasketItemNotFoundException;
-import com.shopcart.basket.model.BasketItem;
-import com.shopcart.basket.repository.BasketItemRepository;
+import com.shopcart.basket.model.CustomerBasket;
+import com.shopcart.basket.repository.CustomBasketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.cassandra.repository.support.BasicMapId;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -16,42 +18,39 @@ import java.util.concurrent.CompletionStage;
 public class BasketItemService implements IBasketItemService {
 
 
-    BasketItemRepository basketItemRepository;
+    CustomBasketRepository customBasketRepository;
 
-    @Autowired
-    public void setBasketItemRepository(@Qualifier("basketItemRepository") BasketItemRepository basketItemRepository) {
-        this.basketItemRepository = basketItemRepository;
+    @Override
+    public List<CustomerBasket> findAll() {
+        List<CustomerBasket> basketItemList = new ArrayList<>();
+        customBasketRepository.findAll().iterator().forEachRemaining(basketItemList::add);
+        return basketItemList;
     }
 
     @Override
-    public List<BasketItem> findAll() {
-        return basketItemRepository.findAll();
-    }
-
-    @Override
-    public BasketItem findById(Long basketItemId) throws BasketItemNotFoundException {
-        Optional<BasketItem> basketItemOptional = basketItemRepository.findById(basketItemId);
+    public CustomerBasket findById(UUID basketItemId) throws BasketItemNotFoundException {
+        Optional<CustomerBasket> basketItemOptional = customBasketRepository.findById(BasicMapId.id("id", basketItemId));
         return basketItemOptional.orElseThrow(BasketItemNotFoundException::new);
     }
 
     @Override
-    public CompletionStage<BasketItem> save(BasketItem basketItem) {
-        return CompletableFuture.supplyAsync(() -> basketItemRepository.save(basketItem));
+    public CompletionStage<CustomerBasket> save(CustomerBasket basketItem) {
+        return CompletableFuture.supplyAsync(() -> customBasketRepository.save(basketItem));
     }
 
     @Override
-    public BasketItem update(Long id, BasketItem basketItem) throws BasketItemNotFoundException {
-        BasketItem basketItemOriginal = findById(id);
-        basketItemOriginal.setQuantity(basketItem.getQuantity());
-        return basketItemRepository.save(basketItemOriginal);
+    public CustomerBasket update(UUID basketItemId, CustomerBasket basketItem) throws BasketItemNotFoundException {
+        CustomerBasket customerBasket = findById(basketItemId);
+        customerBasket.setBasketItems(basketItem.getBasketItems());
+        return customBasketRepository.save(customerBasket);
     }
 
     @Override
-    public boolean delete(Long basketItemId) {
+    public boolean delete(UUID basketItemId) {
         boolean deleted = true;
-        basketItemRepository.deleteById(basketItemId);
+        customBasketRepository.deleteById(BasicMapId.id("id", basketItemId));
         try {
-            BasketItem basketItem = findById(basketItemId);
+            CustomerBasket basketItem = findById(basketItemId);
             if (basketItem != null) {
                 deleted = false;
             }
