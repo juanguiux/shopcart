@@ -1,29 +1,18 @@
 package com.shopcart.basket.model;
 
 import javax.persistence.*;
-import java.util.List;
+
 @Entity
 @Table(name = "customer_basket")
 public class CustomerBasket {
     @Id
-    private String customerId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-    @OneToMany(mappedBy = "customerBasket")
-    private List<BasketItem> basketItemList;
+    @Column(name = "customer_id")
+    private Long customerId;
 
-    public String getCustomerId() {
-        return customerId;
-    }
+    private Long basketId;
 
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
-    }
 
-    public List<BasketItem> getBasketItemList() {
-        return basketItemList;
-    }
-
-    public void setBasketItemList(List<BasketItem> basketItemList) {
-        this.basketItemList = basketItemList;
-    }
 }
