@@ -22,33 +22,31 @@ public class BasketItemService implements IBasketItemService {
 
     @Override
     public List<CustomerBasket> findAll() {
-        List<CustomerBasket> basketItemList = new ArrayList<>();
-        customBasketRepository.findAll().iterator().forEachRemaining(basketItemList::add);
-        return basketItemList;
+        return customBasketRepository.findAll(CustomerBasket.class);
     }
 
     @Override
     public CustomerBasket findById(UUID basketItemId) throws BasketItemNotFoundException {
-        Optional<CustomerBasket> basketItemOptional = customBasketRepository.findById(BasicMapId.id("id", basketItemId));
-        return basketItemOptional.orElseThrow(BasketItemNotFoundException::new);
+        CustomerBasket basketItemOptional = customBasketRepository.findById( basketItemId , CustomerBasket.class);
+        return basketItemOptional;
     }
 
     @Override
     public CompletionStage<CustomerBasket> save(CustomerBasket basketItem) {
-        return CompletableFuture.supplyAsync(() -> customBasketRepository.save(basketItem));
+        return CompletableFuture.supplyAsync(() -> customBasketRepository.create(basketItem));
     }
 
     @Override
     public CustomerBasket update(UUID basketItemId, CustomerBasket basketItem) throws BasketItemNotFoundException {
         CustomerBasket customerBasket = findById(basketItemId);
         customerBasket.setBasketItems(basketItem.getBasketItems());
-        return customBasketRepository.save(customerBasket);
+        return customBasketRepository.create(customerBasket);
     }
 
     @Override
     public boolean delete(UUID basketItemId) {
         boolean deleted = true;
-        customBasketRepository.deleteById(BasicMapId.id("id", basketItemId));
+        customBasketRepository.deleteById( basketItemId , CustomerBasket.class);
         try {
             CustomerBasket basketItem = findById(basketItemId);
             if (basketItem != null) {

@@ -17,7 +17,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <org.springframework.data.version>1.3.2.RELEASE</org.springframework.data.version>
+        <org.springframework.data.version>1.0.0.RELEASE</org.springframework.data.version>
         <cassandra-driver-core.version>2.1.9</cassandra-driver-core.version>
         <cassandra-unit-spring.version>2.1.9.2</cassandra-unit-spring.version>
         <cassandra-unit-shaded.version>2.1.9.2</cassandra-unit-shaded.version>
@@ -44,51 +44,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!--CASSANDRA DEPENDENCIES-->
+        <!-- Spring Data Cassandra -->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-cassandra</artifactId>
             <version>${org.springframework.data.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.cassandraunit</groupId>
-            <artifactId>cassandra-unit-spring</artifactId>
-            <version>${cassandra-unit-spring.version}</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.cassandraunit</groupId>
-                    <artifactId>cassandra-unit</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.cassandraunit</groupId>
-            <artifactId>cassandra-unit-shaded</artifactId>
-            <version>${cassandra-unit-shaded.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hectorclient</groupId>
-            <artifactId>hector-core</artifactId>
-            <version>${hector-core.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>commons-logging</artifactId>
-                    <groupId>commons-logging</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.datastax.cassandra</groupId>
-            <artifactId>cassandra-driver-core</artifactId>
-            <version>${cassandra-driver-core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-transport-native-epoll</artifactId>
-            <version>4.0.27.Final</version>
-            <classifier>linux-x86_64</classifier>
         </dependency>
     </dependencies>
 
