@@ -8,19 +8,22 @@ import java.math.BigDecimal;
 public class BasketItem {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long id;
+    private Long id;
     @Column(name = "product_id")
-    public String productId;
+    private String productId;
     @Column(name = "product_name")
-    public String productName;
+    private String productName;
     @Column(name = "unit_price")
-    public BigDecimal unitPrice;
+    private BigDecimal unitPrice;
     @Column(name = "old_unit_price")
-    public BigDecimal oldUnitPrice;
+    private BigDecimal oldUnitPrice;
     @Column(name = "quantity")
-    public int quantity;
+    private int quantity;
     @Column(name = "picture_url")
-    public String pictureUrl;
+    private String pictureUrl;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="customer_basket_id")
+    private CustomerBasket customerBasket;
 
     public Long getId() {
         return id;
@@ -76,6 +79,14 @@ public class BasketItem {
 
     public void setPictureUrl(String pictureUrl) {
         this.pictureUrl = pictureUrl;
+    }
+
+    public CustomerBasket getCustomerBasket() {
+        return customerBasket;
+    }
+
+    public void setCustomerBasket(CustomerBasket customerBasket) {
+        this.customerBasket = customerBasket;
     }
 
     @Override
