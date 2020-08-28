@@ -54,6 +54,7 @@ public class CassandraConfig extends AbstractCassandraConfiguration {
         return dataCenter;
     }
 
+    // https://lankydan.dev/2017/12/03/startup-and-shutdown-scripts-in-spring-data-cassandra
     @Override
     protected List<CreateKeyspaceSpecification> getKeyspaceCreations() {
         final CreateKeyspaceSpecification specification =
