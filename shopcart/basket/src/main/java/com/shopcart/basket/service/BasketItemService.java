@@ -3,6 +3,7 @@ package com.shopcart.basket.service;
 import com.shopcart.basket.common.BasketItemNotFoundException;
 import com.shopcart.basket.model.CustomerBasket;
 import com.shopcart.basket.repository.CustomBasketRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,11 @@ public class BasketItemService implements IBasketItemService {
 
 
     CustomBasketRepository customBasketRepository;
+
+    @Autowired
+    public void setCustomBasketRepository(CustomBasketRepository customBasketRepository) {
+        this.customBasketRepository = customBasketRepository;
+    }
 
     @Override
     public List<CustomerBasket> findAll() {
