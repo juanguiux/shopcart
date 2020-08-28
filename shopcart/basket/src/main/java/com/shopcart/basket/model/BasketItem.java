@@ -1,10 +1,9 @@
 package com.shopcart.basket.model;
-
-import org.springframework.cassandra.core.Ordering;
-import org.springframework.cassandra.core.PrimaryKeyType;
-import org.springframework.data.cassandra.mapping.Column;
-import org.springframework.data.cassandra.mapping.PrimaryKeyColumn;
-import org.springframework.data.cassandra.mapping.Table;
+import org.springframework.data.cassandra.core.cql.Ordering;
+import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
+import org.springframework.data.cassandra.core.mapping.Column;
+import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
+import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -13,9 +12,9 @@ import java.util.UUID;
 public class BasketItem {
     @PrimaryKeyColumn(name = "id", ordinal = 0, type = PrimaryKeyType.CLUSTERED, ordering = Ordering.DESCENDING)
     private UUID id;
-    @Column
+    @PrimaryKeyColumn(name = "product_id", ordinal = 1, type = PrimaryKeyType.PARTITIONED)
     private String productId;
-    @Column
+    @PrimaryKeyColumn(name = "product_name", ordinal = 1, type = PrimaryKeyType.PARTITIONED)
     private String productName;
     @Column
     private BigDecimal unitPrice;

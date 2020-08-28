@@ -3,11 +3,8 @@ package com.shopcart.basket.service;
 import com.shopcart.basket.common.BasketItemNotFoundException;
 import com.shopcart.basket.model.CustomerBasket;
 import com.shopcart.basket.repository.CustomBasketRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.cassandra.repository.support.BasicMapId;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,31 +19,31 @@ public class BasketItemService implements IBasketItemService {
 
     @Override
     public List<CustomerBasket> findAll() {
-        return customBasketRepository.findAll(CustomerBasket.class);
+        return customBasketRepository.findAll();
     }
 
     @Override
     public CustomerBasket findById(UUID basketItemId) throws BasketItemNotFoundException {
-        CustomerBasket basketItemOptional = customBasketRepository.findById( basketItemId , CustomerBasket.class);
-        return basketItemOptional;
+        Optional<CustomerBasket> basketItemOptional = customBasketRepository.findById( basketItemId);
+        return basketItemOptional.orElseThrow(BasketItemNotFoundException::new);
     }
 
     @Override
     public CompletionStage<CustomerBasket> save(CustomerBasket basketItem) {
-        return CompletableFuture.supplyAsync(() -> customBasketRepository.create(basketItem));
+        return CompletableFuture.supplyAsync(() -> customBasketRepository.save(basketItem));
     }
 
     @Override
     public CustomerBasket update(UUID basketItemId, CustomerBasket basketItem) throws BasketItemNotFoundException {
         CustomerBasket customerBasket = findById(basketItemId);
         customerBasket.setBasketItems(basketItem.getBasketItems());
-        return customBasketRepository.create(customerBasket);
+        return customBasketRepository.save(customerBasket);
     }
 
     @Override
     public boolean delete(UUID basketItemId) {
         boolean deleted = true;
-        customBasketRepository.deleteById( basketItemId , CustomerBasket.class);
+        customBasketRepository.deleteById( basketItemId );
         try {
             CustomerBasket basketItem = findById(basketItemId);
             if (basketItem != null) {

@@ -1,7 +1,6 @@
 package com.shopcart.basket.service;
 
 import com.shopcart.basket.common.BasketItemNotFoundException;
-import com.shopcart.basket.model.BasketItem;
 import com.shopcart.basket.model.CustomerBasket;
 
 import java.util.List;

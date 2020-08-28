@@ -1,98 +1,72 @@
 package com.shopcart.basket.config;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.cassandra.CassandraAutoConfiguration;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
-import org.springframework.data.cassandra.config.CassandraClusterFactoryBean;
-import org.springframework.data.cassandra.config.CassandraSessionFactoryBean;
+import org.springframework.data.cassandra.config.AbstractCassandraConfiguration;
 import org.springframework.data.cassandra.config.SchemaAction;
-import org.springframework.data.cassandra.convert.CassandraConverter;
-import org.springframework.data.cassandra.convert.MappingCassandraConverter;
-import org.springframework.data.cassandra.core.CassandraOperations;
-import org.springframework.data.cassandra.core.CassandraTemplate;
-import org.springframework.data.cassandra.mapping.BasicCassandraMappingContext;
-import org.springframework.data.cassandra.mapping.CassandraMappingContext;
+import org.springframework.data.cassandra.core.cql.keyspace.CreateKeyspaceSpecification;
+import org.springframework.data.cassandra.core.cql.keyspace.DropKeyspaceSpecification;
+import org.springframework.data.cassandra.core.cql.keyspace.KeyspaceOption;
+import org.springframework.data.cassandra.repository.config.EnableCassandraRepositories;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+;
 
 @Configuration
-@EnableAutoConfiguration(exclude = CassandraAutoConfiguration.class)
-public class CassandraConfig{
-    private static final Log LOGGER = LogFactory.getLog(CassandraConfig.class);
-
-    /**
-     * Constant String for Keyspace
-     */
-    private static final String KEYSPACE = "cassandra.keyspace";
-    /**
-     * Constant String for ContactPoints
-     */
-    private static final String CONTACTPOINTS = "cassandra.contactpoints";
-    /**
-     * Constant String for Port
-     */
-    private static final String PORT = "cassandra.port";
-
-    @Autowired
-    private Environment environment;
-
-    public CassandraConfig() {
-        System.out.println("CassandraUtil()");
+@EnableCassandraRepositories
+public class CassandraConfig extends AbstractCassandraConfiguration {
+    @Value("${cassandra.contactpoints}")
+    private String contactPoints;
+    @Value("${cassandra.port}")
+    private int port;
+    @Value("${cassandra.keyspace}")
+    private String keySpace;
+    @Value("${cassandra.basePackages}")
+    private String basePackages;
+    @Value("${cassandra.datacenter}")
+    private String dataCenter;
+    @Override
+    protected String getKeyspaceName() {
+        return keySpace;
+    }
+    @Override
+    protected String getContactPoints() {
+        return contactPoints;
+    }
+    @Override
+    protected int getPort() {
+        return port;
+    }
+    @Override
+    public SchemaAction getSchemaAction() {
+        return SchemaAction.CREATE_IF_NOT_EXISTS;
+    }
+    @Override
+    public String[] getEntityBasePackages() {
+        return new String[] {basePackages};
     }
 
-    private String getKeyspaceName() {
-        return environment.getProperty(KEYSPACE);
+    @Override
+    protected String getLocalDataCenter() {
+        return dataCenter;
     }
 
-    private String getContactPoints() {
-        return environment
-                .getProperty(CONTACTPOINTS);
+    @Override
+    protected List<CreateKeyspaceSpecification> getKeyspaceCreations() {
+        final CreateKeyspaceSpecification specification =
+                CreateKeyspaceSpecification.createKeyspace(keySpace)
+                        .ifNotExists()
+                        .with(KeyspaceOption.DURABLE_WRITES, true)
+                        .withSimpleReplication();
+        return  Stream.of(specification)
+                .collect(Collectors.toList());
     }
 
-    private int getPortNumber() {
-        return Integer.parseInt(environment
-                .getProperty(PORT));
-    }
-
-    @Bean
-    public CassandraClusterFactoryBean cluster() {
-        CassandraClusterFactoryBean cluster = new CassandraClusterFactoryBean();
-        cluster.setContactPoints(getContactPoints());
-        cluster.setPort(getPortNumber());
-        return cluster;
-    }
-
-    @Bean
-    public CassandraMappingContext mappingContext() {
-        return new BasicCassandraMappingContext();
-    }
-
-    @Bean
-    public CassandraConverter converter() {
-        return new MappingCassandraConverter(mappingContext());
-    }
-
-    @Bean
-    public CassandraSessionFactoryBean session() throws Exception {
-        CassandraSessionFactoryBean cassandraSessionFactoryBean = new CassandraSessionFactoryBean();
-        cassandraSessionFactoryBean.setCluster(cluster().getObject());
-        cassandraSessionFactoryBean.setKeyspaceName(getKeyspaceName());
-        cassandraSessionFactoryBean.setConverter(converter());
-        cassandraSessionFactoryBean.setSchemaAction(SchemaAction.NONE);
-        return cassandraSessionFactoryBean;
-    }
-
-    @Bean
-    public CassandraTemplate cassandraTemplate() throws Exception {
-        return new CassandraTemplate(session().getObject());
+    @Override
+    protected List<DropKeyspaceSpecification> getKeyspaceDrops() {
+        return Stream.of(DropKeyspaceSpecification.dropKeyspace(keySpace)).collect(Collectors.toList());
     }
 }
