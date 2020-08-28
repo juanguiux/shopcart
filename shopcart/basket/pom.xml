@@ -18,10 +18,6 @@
     <properties>
         <java.version>1.8</java.version>
         <org.springframework.data.version>3.0.3.RELEASE</org.springframework.data.version>
-        <cassandra-driver-core.version>2.1.9</cassandra-driver-core.version>
-        <cassandra-unit-spring.version>2.1.9.2</cassandra-unit-spring.version>
-        <cassandra-unit-shaded.version>2.1.9.2</cassandra-unit-shaded.version>
-        <hector-core.version>2.0-0</hector-core.version>
     </properties>
 
     <dependencies>
